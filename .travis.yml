@@ -1,0 +1,12 @@
+sudo: required # need sudo for this to build
+services:
+    - docker # install a copy of docker
+
+before_install: # series of commands our tests are ran
+    - docker build -t techlearn-gurumind/docker-react -f Dockerfile.dev . # build using Dockerfile.dev
+
+
+script:
+    # travis will watch the output of these commands, travis assumes test run and EXIT, but npm test presents menu...
+    # - docker run techlearn-gurumind/docker-react npm run test -- --coverage
+    - docker run -e CI=true techlearn-gurumind/docker-react npm run test
