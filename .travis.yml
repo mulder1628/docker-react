@@ -10,3 +10,29 @@ script:
     # travis will watch the output of these commands, travis assumes test run and EXIT, but npm test presents menu...
     # - docker run techlearn-gurumind/docker-react npm run test -- --coverage
     - docker run -e CI=true techlearn-gurumind/docker-react npm run test
+
+# how to take our application and deploy to aws
+deploy:
+    # fix missing bucket_name error as dpl script Travis used to deploy and do build verification
+    edge: true
+    # travis ci knows about this AWS provider
+    provider: elasticbeanstalk
+    # our is in Asia Pacific (Singapore)ap-southeast-1
+    region: "ap-southeast-1"
+    # application name: docker-react
+    app: "docker-react"
+    # the actual app in aws is an environment
+    env: "DockerReact-env"
+    # Travis zip up all the application code and send to S3, and poke elasticbeanstalk to use
+    bucket_name: "elasticbeanstalk-ap-southeast-1-907356006991"
+    # initally the bucket_path == app (name)
+    bucket_path: "docker-react"
+    on:
+        # only deploy when code is updated on master branch (pull request)
+        branch: master
+    # get it from the local env var that we set in the travis dashboard
+    access_key_id: $AWS_ACCESS_KEY
+    # previous version - will generate error
+    # secret_access_key: 
+    #    secure: "$AWS_SECRET_KEY"
+    secret_access_key: $AWS_SECRET_KEY
